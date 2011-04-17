@@ -1,81 +1,145 @@
 /**
-   Memorizing D 'n' B sizes
-*/
-(function(GLOBAL, $, undefined){
+ Memorizing D 'n' B sizes
+ */
+(function(GLOBAL, $, undefined) {
 
-   var _MODULE = this;
-   var _array = [];
+	"strict mode"
 
-   var _CONSTANTS = {
-       itemDefaults: { cups: 'BB', bust: '90' }
-   };
+	var _MODULE = this;
+	var _hash = {};
 
-   var _init = function(){
-       this.html(''); return this;
-   }; // var _init
+	var _CONSTANTS = {
+		defaults: {
+			plugin: { headers: true, classes: 'dnbs' },
+			female: { cups: 'B', bust: '90' },
+			male: {}
+		} // defaults
+		,
+		keys: {
+			data: 'dnbs'
+		} // keys
+	}; // _CONSTANTS
 
-   var _add = function(args){
+	var _init = function(args) {
+		var settings = $.extend({},_CONSTANTS.defaults.plugin,args);
+		this.data(_CONSTANTS.keys.data,settings);
+		this.html('').addClass(settings.classes);
+		return this;
+	}; // var _init
 
-       if(!args.name){
-           return this;
-       } // if
+	var _addOne = function(args) {
 
-       var item = $.extend( {} ,_CONSTANTS.itemDefaults, args );
-       _array.push(item);
+		if(!args.name) {
+			return this;
+		} // if
 
-       return this;
+		var person = $.extend( { key: args.name } ,_CONSTANTS.defaults.female, args )
+		//Array.prototype.push.call(_hash,item);
+		_hash[person.name] = person;
 
-   }; // var _add
+		return this;
 
-   var _list = function(args){
-       var $element = this;
-       $element.html('');
-	var odd = true;
-       $.each(_array,function(index,item){
-	odd = !odd;
-           $element.append('<span class="row '+(odd?'odd':'even')+' ">'+ item.name + ', ' + item.cups + ', ' + item.bust +'</span><br />');
-       });
-       return this;
-   }; // var _list
+	}; // var _addOne
 
-   var _clear = function(args){
+	var _add = function(args) {
 
-       args = args || {};
+		if($.isArray(args)) {
+			$.each(args, function(index,element) {
+				_addOne(element);
+			});
 
-       var $element = this;
-       var html = ( 'undefined' === typeof args.html) ? true : !! args.html ;
-       if( html){
-           $element.html('');
-       } // if html
+			return this;
+		} // if
 
-       if( !!args.data ){
-           _array = [];
-       } // if args.data
+		return _addOne(args);
 
-       return this;
+	}; // var _add
 
-   }; // var _clear
+	var _get = function(args) {
 
-   var _methods = {
-       init: _init,
-       add: _add,
-       list: _list,
-       clear: _clear
-   }; // MODULE._methods = {} ;
+		args = args || {};
 
-   /**
-   The default message pump for the plugin
-   */
-   $.fn.dnbs = function( method ) {
+		if(!!args.all) {
+			return _hash;
+		} // if args.all
 
-       if ( _methods[method] ) {
-         return _methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-       } else if ( typeof method === 'object' || ! method ) {
-         return _methods.init.apply( this, arguments );
-       } else {
-         $.error( 'Method "' +  method + '" does not exist on jQuery.ace' );
-       }
+		return $.extend({},_hash[args.key]);
 
-   }; // $.fn.dnbs
+	}; // var _get
 
-})(window,$jq);
+	var _show = function(args) {
+
+		var $element = this;
+		var odd = false;
+		var settings = $element.data(_CONSTANTS.keys.data) || {};
+
+		$element.html('');
+
+		var $table = $('<table class="table"></table>').appendTo($element);
+		if(settings.headers) {
+			$table.append('<thead class="headers"> \
+			<th class="name" >Name</th> \
+			<th class="cups" >Cups</th> \
+			<th class="bust" >Bust</th> \
+			</thead>');
+		} // if
+		
+		var $tbody = $('<tbody></tbody>').appendTo($table);
+		
+		$.each(_hash, function(index,person) {
+			odd = !odd;
+			var $row = $('<tr class="row" ></tr>');
+			$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
+			$row.append( '<td class="name" >' + person.name + '</td>' );
+			$row.append( '<td class="cups" >' + person.cups + '</td>' );
+			$row.append( '<td class="bust" >' + person.bust + '</td>' );
+			$tbody.append( $row );
+		}); // $.each
+
+		return this;
+
+	}; // var _show
+
+	var _clear = function(args) {
+
+		args = args || {};
+
+		var $element = this;
+		var html = ( 'undefined' === typeof args.html) ? true : !! args.html ;
+		if( html) {
+			$element.html('');
+		} // if html
+
+		if( !!args.data ) {
+			_hash = {};
+		} // if args.data
+
+		return this;
+
+	}; // var _clear
+
+	var _methods = {
+		init: _init,
+		add: _add,
+		show: _show,
+		clear: _clear,
+		get: _get
+	}; // var _methods
+
+	/**
+ 	The default message pump for the plugin
+ 	*/
+	$.fn.dnbs = function( method ) {
+
+		if ( _methods[method] ) {
+			return _methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+		} else if ( typeof method === 'object' || ! method ) {
+			return _methods.init.apply( this, arguments );
+		} else {
+			$.error( 'Method "' +  method + '" does not exist on jQuery.dnbs' );
+		}
+		// if-else _methods
+
+	}; // $.fn.dnbs
+
+}).call({},window,jQuery);

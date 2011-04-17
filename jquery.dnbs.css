@@ -1,0 +1,21 @@
+.dnbs table {
+	width: 100%;
+}
+.dnbs td {
+	padding-left: 1em;
+}
+.dnbs .row {
+	width: 100%;
+}
+.dnbs .row.odd {
+	background: #F3F3FF;
+}
+.dnbs .row.even {
+	background: #FFFFF3;
+}
+.dnbs .row .name {
+	width: 60%;
+}
+.dnbs .row .cups, .dnbs .row .bust {
+	width: 20%;
+}
