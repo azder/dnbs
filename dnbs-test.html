@@ -8,25 +8,63 @@
 		</style>
 	</head>
 	<body >
-
 		<section id="main">
 			<div id="dnbs1">
 			</div>
+			<form>
+			<div>
+				<input type="text" placeholder="Enter Name" id="name" class="textbox"></input>
+				<input type="text" placeholder="Enter cups" id="cups" class="textbox"></input>
+				<input type="text" placeholder="Enter bust" id="bust" class="textbox"></input>
+			<input type="submit" value="Add" class="submit"></button>
+			</div>
+			</form>
+			
 		</section>
 		
 		<!-- SCRIPTS START -->
 		<script type="text/javascript" src="jquery-1.5.1.min.js"></script>
-		<script type="text/javascript" src="jquery-ui-1.8.10.full.min.js"></script>
+		<script type="text/javascript" src="jquery-ui-1.8.11.full.min.js"></script>
 		<script type="text/javascript" src="jquery.dnbs.js" ></script>
 		
 		<script type="text/javascript" >
 			
 			var $jq = jQuery.noConflict();
 			
+			var test01 = function() {
+
+					var test = 0;
+		
+					var odd = false;
+					/*var $d = $('#dnbs1').dnbs();
+					$d.dnbs('add', [{ name: 'Alexandra Makedonska', cups: 'A', bust: '95' } ]);*/
+					var $name = $('#name');
+					var $cups = $('#cups');
+					var $bust = $('#bust');
+					/*alert('Name : ' + $name + ' Cups : ' + $cups  + ' Bust : ' + $bust);*/
+					
+					var $row = $('<tr class="row" ></tr>');
+					$row.append('<td class="name" >' + $name.val() + '</td>');
+					$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key');
+					$row.append( '<td class="cups" >' + $cups.val() + '</td>' );
+					$row.append( '<td class="bust" >' + $bust.val() + '</td>' );
+					$row.append( '<input type=checkbox class="check" ></td>' );
+					$('.dnbs').append( $row );
+					$('.textbox').attr('value', '');
+					$('.check').addClass("pomestuvanje");
+					return false;
+	
+				/*return false;*/
+			}
+
+			
 			$jq(function($){
-				
 				var $d = $('#dnbs1').dnbs();
 				
+				$('.submit').bind('click', function(){
+					test01();
+				});
+							
 				$d.dnbs('add',{ name: 'Jenna Jameson', cups: 'DD', bust: '86' });
 				
 				$d.dnbs('add', [
@@ -35,15 +73,10 @@
 				] ); // add
 				
 				$d.dnbs('show');
-				
 				// console.log($d.dnbs('get',{all:true}));
 				// window.AZ = { $d: $d };
-				
 			}); // $jq
-			
 		</script>
-		
 		<!-- SCRIPTS END -->
-		
 	</body>
 </html>

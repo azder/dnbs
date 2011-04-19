@@ -67,35 +67,71 @@
 
 	}; // var _get
 
-	var _show = function(args) {
-
-		var $element = this;
-		var odd = false;
-		var settings = $element.data(_CONSTANTS.keys.data) || {};
-
-		$element.html('');
-
-		var $table = $('<table class="table"></table>').appendTo($element);
-		if(settings.headers) {
-			$table.append('<thead class="headers"> \
-			<th class="name" >Name</th> \
-			<th class="cups" >Cups</th> \
-			<th class="bust" >Bust</th> \
-			</thead>');
+	var _renderHead = function(args){
+		
+		args = args || {};
+		var settings = args.settings;
+		var $table = $(args.table);
+		
+		if( !settings || !settings.headers || 0 >= $table.length ) {
+			return this;
 		} // if
 		
-		var $tbody = $('<tbody></tbody>').appendTo($table);
+		$table.append('<thead class="headers"><tr> \
+		<th class="name" >Name</th> \
+		<th class="cups" >Cups</th> \
+		<th class="bust" >Bust</th> \
+		<th class="check" >Check</th> \
+		</tr></thead>');
 		
+	} ; // var _renderHead
+	
+	var _renderBody = function(args){
+	
+		args = args || {};
+		var settings = args.settings;
+		var $table = $(args.table);
+		
+		if( !settings || !settings.headers || 0 >= $table.length ) {
+			return this;
+		} // if
+	
+		var $tbody = $('<tbody></tbody>').appendTo($table);
+		var odd = false;
+				
 		$.each(_hash, function(index,person) {
 			odd = !odd;
 			var $row = $('<tr class="row" ></tr>');
+			$row.append('<td class="name" >' + person.name + '</td>');
 			$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
-			$row.append( '<td class="name" >' + person.name + '</td>' );
 			$row.append( '<td class="cups" >' + person.cups + '</td>' );
 			$row.append( '<td class="bust" >' + person.bust + '</td>' );
+			$row.append( '<input type=checkbox class="check" ></td>' );
 			$tbody.append( $row );
 		}); // $.each
+	
+	} ; // _renderBody
+	
+	var _renderControls = function(args){
+		
+	
+	
+	} ; // _renderControls
+	
+	var _show = function(args) {
 
+		var $element = this;
+		var settings = $element.data(_CONSTANTS.keys.data) || {};
+		$element.html('');
+
+		var $table = $('<table class="table"></table>').appendTo($element);
+		
+		_renderHead( { settings:settings,table:$table } );
+		
+		_renderBody( { settings:settings,table:$table } );
+
+		_renderControls();
+		
 		return this;
 
 	}; // var _show
