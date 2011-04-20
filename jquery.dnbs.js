@@ -1,4 +1,5 @@
 /**
+/**
  Memorizing D 'n' B sizes
  */
 (function(GLOBAL, $, undefined) {
@@ -20,7 +21,7 @@
 		} // keys
 	}; // _CONSTANTS
 
-	var _init = function(args) {
+	var _init = function(args) {		
 		var settings = $.extend({},_CONSTANTS.defaults.plugin,args);
 		this.data(_CONSTANTS.keys.data,settings);
 		this.html('').addClass(settings.classes);
@@ -77,22 +78,23 @@
 			return this;
 		} // if
 		
-		$table.append('<thead class="headers"><tr> \
+		var $thead = $('<thead class="headers"><tr> \
 		<th class="name" >Name</th> \
 		<th class="cups" >Cups</th> \
 		<th class="bust" >Bust</th> \
 		<th class="check" >Check</th> \
-		</tr></thead>');
+		</tr></thead>').appendTo($table);
+		
+		return $thead;
 		
 	} ; // var _renderHead
 	
 	var _renderBody = function(args){
 	
 		args = args || {};
-		var settings = args.settings;
 		var $table = $(args.table);
 		
-		if( !settings || !settings.headers || 0 >= $table.length ) {
+		if( 0 >= $table.length ) {
 			return this;
 		} // if
 	
@@ -106,16 +108,42 @@
 			$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
 			$row.append( '<td class="cups" >' + person.cups + '</td>' );
 			$row.append( '<td class="bust" >' + person.bust + '</td>' );
-			$row.append( '<input type=checkbox class="check" ></td>' );
-			$tbody.append( $row );
+			$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
+			$tbody.append( $row );			
 		}); // $.each
-	
-	} ; // _renderBody
+		
+		return $tbody;
+			
+	} ; // _renderBody 
 	
 	var _renderControls = function(args){
-		
+			
+			console.log('>> _renderControls',this,args);
+			
+			args = args || {};
+			var $table = $(args.table);
 	
-	
+			if( 0 >= $table.length ) {
+				console.log('<< _renderControls','$table.length <= 0');
+				return this;
+			} // if
+			
+			var $tfoot = $('<tfoot></tfoot>').appendTo($table);
+			var odd = false;
+			
+			var $tr = $('<tr class="add"></tr>').appendTo($tfoot);
+			
+			$tr.append('<td class="name" ><input type="text" placeholder="Name" name="name" class="textbox"></input></td>');
+			$tr.append('<td class="cups" ><input type="text" placeholder="Cups" name="cups" class="textbox"></input></td>');
+			$tr.append('<td class="bust" ><input type="text" placeholder="Bust" name="bust" class="textbox"></input></td>');
+			$tr.append('<td class="add" ><input type="submit" value="Add" class="button add"></td>');
+			
+			var $submit = $tr.find('input.button.add');
+			console.log('-- _renderControls', '$submit',$submit)
+			
+			console.log('<< _renderControls',$tr);
+			return $tfoot;
+			 
 	} ; // _renderControls
 	
 	var _show = function(args) {
@@ -130,7 +158,7 @@
 		
 		_renderBody( { settings:settings,table:$table } );
 
-		_renderControls();
+		_renderControls( { table:$table } );
 		
 		return this;
 
@@ -154,12 +182,43 @@
 
 	}; // var _clear
 
+	var _addRow = function(args) {		
+		args = args || {};
+		
+		var $this = $(this);
+		
+		var test = $this.find('name');
+		alert(test);
+		
+		var settings = args.settings;
+		var $table = $(args.table);
+		
+		if( !settings || !settings.headers || 0 >= $table.length ) {
+			return this;
+		} // if
+	
+		var $tbody = $('<tbody></tbody>').appendTo($table);
+		var odd = false;
+				
+		$.each(_hash, function(index,person) {
+			odd = !odd;
+			var $row = $('<tr class="row" ></tr>');
+			$row.append('<td class="name" >' + person.name + '</td>');
+			$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
+			$row.append( '<td class="cups" >' + person.cups + '</td>' );
+			$row.append( '<td class="bust" >' + person.bust + '</td>' );
+			$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
+			$tbody.append( $row );			
+		}); // $.each	
+	}
+
 	var _methods = {
 		init: _init,
 		add: _add,
 		show: _show,
 		clear: _clear,
-		get: _get
+		get: _get,
+		addRow: _addRow
 	}; // var _methods
 
 	/**

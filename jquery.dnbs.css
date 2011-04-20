@@ -1,6 +1,12 @@
+
 .dnbs table {
 	width: 100%;
 }
+
+.dnbs thead {
+	background: #F9F9F9;
+}
+
 .dnbs td {
 	padding-left: 1em;
 }
@@ -14,16 +20,30 @@
 	background: #FFFFF3;
 }
 .dnbs .row .name {
-	width: 60%;
+	width: 80%;
 }
 .dnbs .row .cups, .dnbs .row .bust {
-	width: 20%;
+	width: 10%;
 }
 
-.check {
-	margin-left:15px;
+.dnbs .row .delete, .dnbs .row .add {
+	text-align: center;
+	padding-left: 0px;
 }
 
-.pomestuvanje{
-	margin-right:30px;
+.dnbs tr.add {
+	background: #F3FCF3;
 }
+
+.dnbs tr.name input {
+	width: 10em;
+}
+
+.dnbs .cups input, .dnbs .bust input {
+	width: 3em;
+}
+
+.dnbs .delete {
+	text-decoration: none;
+}
+
