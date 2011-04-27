@@ -12,6 +12,12 @@
 			
 			<div id="dnbs1">
 			</div>
+			
+			<!--div class="many" ></div>
+			<div class="many" ></div>
+			<div class="many" ></div>
+			<div class="many" ></div-->
+			
 		</section>
 		
 		<!-- SCRIPTS START -->
@@ -32,14 +38,13 @@
 				
 				var $this = $(this);
 				
-				var test = $this.find("submit");
+				/*var test = $this.find('.button');
+				console.log(test);
 				$(test).bind('click', function() {					
-					alert('sadas');				
-				});
-				
-				/*$('.submit').bind('click', function(){
-					test01();
+					alert('pero');				
 				});*/
+				
+
 
 				$d.dnbs('add',{ name: 'Jenna Jameson', cups: 'DD', bust: '86' });
 
@@ -51,6 +56,11 @@
 				$d.dnbs('show');
 				// console.log($d.dnbs('get',{all:true}));
 				// window.AZ = { $d: $d };
+				
+				/*var $m = $('.many').dnbs();
+				$m.dnbs('add',{ name: 'Jenna Jameson', cups: 'DD', bust: '86' });
+				$m.dnbs('show');*/
+				
 			}); // $jq
 		</script>
 		<!-- SCRIPTS END -->

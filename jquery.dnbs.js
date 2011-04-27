@@ -8,7 +8,7 @@
 
 	var _MODULE = this;
 	var _hash = {};
-
+	
 	var _CONSTANTS = {
 		defaults: {
 			plugin: { headers: true, classes: 'dnbs' },
@@ -21,19 +21,27 @@
 		} // keys
 	}; // _CONSTANTS
 
-	var _init = function(args) {		
+	var _init = function(args) {	
+		
+		var $element = this;		
 		var settings = $.extend({},_CONSTANTS.defaults.plugin,args);
-		this.data(_CONSTANTS.keys.data,settings);
-		this.html('').addClass(settings.classes);
+		$element.data(_CONSTANTS.keys.data,settings);
+		$element.html('').addClass(settings.classes);
+
 		return this;
+		
 	}; // var _init
 
 	var _addOne = function(args) {
-
+		
+		//console.log('>> _addOne()', this, args);
+		
 		if(!args.name) {
 			return this;
 		} // if
 
+		// console.log('-- _addOne()', this, args);
+		
 		var person = $.extend( { key: args.name } ,_CONSTANTS.defaults.female, args )
 		//Array.prototype.push.call(_hash,item);
 		_hash[person.name] = person;
@@ -44,15 +52,25 @@
 
 	var _add = function(args) {
 
-		if($.isArray(args)) {
-			$.each(args, function(index,element) {
-				_addOne(element);
-			});
+		return this.each(function(index,element){
+			
+			var $dnbsElement = $(element);
 
-			return this;
-		} // if
+			console.log('-- _add() $element: ', $dnbsElement);
+		
+			if($.isArray(args)) {
+				
+				$.each(args, function(index,arg) {
+					_addOne(arg);
+				}); // $.each args
 
-		return _addOne(args);
+				return this;
+				
+			} // if
+		
+			return _addOne(args);
+		
+		}); // this.each
 
 	}; // var _add
 
@@ -67,6 +85,34 @@
 		return $.extend({},_hash[args.key]);
 
 	}; // var _get
+	
+		var testValidation = function(){
+
+			var name = $('input[name^="name"]').val();
+			var cups = $('input[name^="cups"]').val();
+			var bust = $('input[name^="bust"]').val();
+
+		
+			$('input:text.items').val(function(index, element) {
+				alert( value + ' ' + this.className);
+				/*if (name.val().lenght==0) {
+					
+				}*/
+			});		
+			
+		};
+		
+		
+	var _validate = function() {
+		if ($('input:text').val().lenght==0) {
+			alert('imate prazni polinja');
+		}
+		
+		/*if (name === "" || cups === "" || bust === "") {
+			alert('Imas prazni polinja');
+			return false;
+		}*/
+	}
 
 	var _renderHead = function(args){
 		
@@ -116,6 +162,18 @@
 			
 	} ; // _renderBody 
 	
+	var _addRecord = function(args) {
+
+		args = args || {};
+		
+		$row.append('<td class="name" >' + person.name + '</td>');
+		$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
+		$row.append( '<td class="cups" >' + person.cups + '</td>' );
+		$row.append( '<td class="bust" >' + person.bust + '</td>' );
+		$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
+		$tbody.append( $row );			
+	}
+	
 	var _renderControls = function(args){
 			
 			console.log('>> _renderControls',this,args);
@@ -160,16 +218,64 @@
 
 		_renderControls( { table:$table } );
 		
+		_addEvents({ element:$element });
+		
 		return this;
 
 	}; // var _show
+	
+	var _addEvents = function(args){
+		
+		args = args || {};
+		
+		var $element = $(args.element);
+		console.log($element);
+		$element.find('.button.add').bind('click', function() {
+			testValidation();
+			_validate();
+			var tableFind = $('body').find('.table');
+			console.log(tableFind);
+			_addRow( { $tableFind:tableFind } );
+		});	
+	
+	} ; // var _addEvents
 
+	var _addRow = function(args) {
+
+		args = args || {};
+		var $table = $('body').find('.table');
+
+		var name = $('input[name^="name"]').val();
+		var cups = $('input[name^="cups"]').val();
+		var bust = $('input[name^="bust"]').val();
+		
+		if( 0 >= $table.length ) {
+			return this;
+		} // if
+	
+		var $tbody = $('<tbody></tbody>').appendTo($table);
+		var odd = false;
+				
+		
+			odd = !odd;
+			var $row = $('<tr class="row" ></tr>');
+			$row.append('<td class="name" >' + name + '</td>');
+			/*$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);*/
+			$row.append( '<td class="cups" >' + cups + '</td>' );
+			$row.append( '<td class="bust" >' + bust + '</td>' );
+			$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
+			$tbody.append( $row );			
+		
+		
+		return $tbody;
+	}; // var _addRow
+			
 	var _clear = function(args) {
 
 		args = args || {};
 
 		var $element = this;
-		var html = ( 'undefined' === typeof args.html) ? true : !! args.html ;
+		var html = ( 'undefined' === typeof args.html) ? true : !! args.html;
 		if( html) {
 			$element.html('');
 		} // if html
@@ -181,36 +287,6 @@
 		return this;
 
 	}; // var _clear
-
-	var _addRow = function(args) {		
-		args = args || {};
-		
-		var $this = $(this);
-		
-		var test = $this.find('name');
-		alert(test);
-		
-		var settings = args.settings;
-		var $table = $(args.table);
-		
-		if( !settings || !settings.headers || 0 >= $table.length ) {
-			return this;
-		} // if
-	
-		var $tbody = $('<tbody></tbody>').appendTo($table);
-		var odd = false;
-				
-		$.each(_hash, function(index,person) {
-			odd = !odd;
-			var $row = $('<tr class="row" ></tr>');
-			$row.append('<td class="name" >' + person.name + '</td>');
-			$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
-			$row.append( '<td class="cups" >' + person.cups + '</td>' );
-			$row.append( '<td class="bust" >' + person.bust + '</td>' );
-			$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
-			$tbody.append( $row );			
-		}); // $.each	
-	}
 
 	var _methods = {
 		init: _init,
