@@ -31,25 +31,16 @@
 			
 			var test01 = function() {
 				alert('this is just a test for now.');
-			}
+			};
 			
 			$jq(function($){
 				var $d = $('#dnbs1').dnbs();
 				
 				var $this = $(this);
-				
-				/*var test = $this.find('.button');
-				console.log(test);
-				$(test).bind('click', function() {					
-					alert('pero');				
-				});*/
-				
-
-
-				$d.dnbs('add',{ name: 'Jenna Jameson', cups: 'DD', bust: '86' });
 
 				$d.dnbs('add', [
-					{ name: 'Silvia Saint', cups: 'C', bust: '86' },
+					{ name: 'Jenna Jameson', cups: 'DD', bust: '86' },
+					{ key: 'silvi', name: 'Silvia Saint', cups: 'C', bust: '86' },
 					{ name: 'Traci Lords', cups: 'D', bust: '91' }
 				] ); // add
 				

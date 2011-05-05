@@ -21,42 +21,57 @@
 		} // keys
 	}; // _CONSTANTS
 
-	var _init = function(args) {	
+	var _init = function(args) {
 		
-		var $element = this;		
+		var $element = this;
 		var settings = $.extend({},_CONSTANTS.defaults.plugin,args);
 		$element.data(_CONSTANTS.keys.data,settings);
 		$element.html('').addClass(settings.classes);
-
+	
 		return this;
-		
+
 	}; // var _init
+		
+	var _removeOne = function(args) {
+		var $element = $(args.element);
+		console.log('element : ',$element);
+		var $parent = $element.closest('[data-dnbs-key]').remove();		
+		var key = $parent.attr('data-dnbs-key');
+		console.log('this is the key value : ', key);
+		delete _hash[key];
+	}
 
 	var _addOne = function(args) {
 		
 		//console.log('>> _addOne()', this, args);
-		
+
 		if(!args.name) {
-			return this;
+			alert('Name field is required!');
+			var test = $('input[name^="name"]').focus();
+			return false;
 		} // if
-
-		// console.log('-- _addOne()', this, args);
 		
-		var person = $.extend( { key: args.name } ,_CONSTANTS.defaults.female, args )
-		//Array.prototype.push.call(_hash,item);
-		_hash[person.name] = person;
+        var key = '' + (args.key || args.name);
+		console.log('this is test -- -- -- ', key);
+		//console.log('-- _addOne()', this, args, key);
+		
+		var person = $.extend( { key: key } ,_CONSTANTS.defaults.female, args )
 
+		//Array.prototype.push.call(_hash,item);
+		_hash[key] = person;
+		
+		
 		return this;
 
 	}; // var _addOne
 
 	var _add = function(args) {
-
+	
 		return this.each(function(index,element){
 			
 			var $dnbsElement = $(element);
-
-			console.log('-- _add() $element: ', $dnbsElement);
+			
+			// console.log('-- _add() $element: ', $dnbsElement);
 		
 			if($.isArray(args)) {
 				
@@ -85,34 +100,24 @@
 		return $.extend({},_hash[args.key]);
 
 	}; // var _get
-	
-		var testValidation = function(){
-
-			var name = $('input[name^="name"]').val();
-			var cups = $('input[name^="cups"]').val();
-			var bust = $('input[name^="bust"]').val();
-
-		
-			$('input:text.items').val(function(index, element) {
-				alert( value + ' ' + this.className);
-				/*if (name.val().lenght==0) {
-					
-				}*/
-			});		
+	/*
+		var _validate = function(){
 			
-		};
-		
-		
-	var _validate = function() {
-		if ($('input:text').val().lenght==0) {
-			alert('imate prazni polinja');
-		}
-		
-		/*if (name === "" || cups === "" || bust === "") {
-			alert('Imas prazni polinja');
-			return false;
-		}*/
-	}
+			var name = $('input[name="name"]').val();
+			var cups = $('input[name="cups"]').val();
+			var bust = $('input[name="bust"]').val();
+			
+			var name1 = $('#testTextBox').val();
+			
+			if (!name1) {
+				alert('Empty string');
+				return false;
+			}
+			
+			return true;
+			
+		}; // var _validate
+		*/
 
 	var _renderHead = function(args){
 		
@@ -147,7 +152,11 @@
 		var $tbody = $('<tbody></tbody>').appendTo($table);
 		var odd = false;
 				
-		$.each(_hash, function(index,person) {
+		//$.each(_hash, function(index,person) {
+		console.log('-- _renderBody() _hash:', _hash);
+		for(var key in _hash){
+			var person = _hash[key];
+			console.log('-- _renderBody() person:', person);
 			odd = !odd;
 			var $row = $('<tr class="row" ></tr>');
 			$row.append('<td class="name" >' + person.name + '</td>');
@@ -155,23 +164,24 @@
 			$row.append( '<td class="cups" >' + person.cups + '</td>' );
 			$row.append( '<td class="bust" >' + person.bust + '</td>' );
 			$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
-			$tbody.append( $row );			
-		}); // $.each
+			$tbody.append( $row );
+		} // for person
+		//}); // $.each
 		
 		return $tbody;
-			
-	} ; // _renderBody 
+		
+	} ; // _renderBody
 	
 	var _addRecord = function(args) {
 
 		args = args || {};
 		
 		$row.append('<td class="name" >' + person.name + '</td>');
-		$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);
+		$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key', person.key);
 		$row.append( '<td class="cups" >' + person.cups + '</td>' );
 		$row.append( '<td class="bust" >' + person.bust + '</td>' );
 		$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
-		$tbody.append( $row );			
+		$tbody.append( $row );
 	}
 	
 	var _renderControls = function(args){
@@ -191,19 +201,19 @@
 			
 			var $tr = $('<tr class="add"></tr>').appendTo($tfoot);
 			
-			$tr.append('<td class="name" ><input type="text" placeholder="Name" name="name" class="textbox"></input></td>');
+			$tr.append('<td class="name" ><input type="text" placeholder="Name" name="name" id="testTextBox" class="textbox"></input></td>');
 			$tr.append('<td class="cups" ><input type="text" placeholder="Cups" name="cups" class="textbox"></input></td>');
 			$tr.append('<td class="bust" ><input type="text" placeholder="Bust" name="bust" class="textbox"></input></td>');
 			$tr.append('<td class="add" ><input type="submit" value="Add" class="button add"></td>');
 			
 			var $submit = $tr.find('input.button.add');
-			console.log('-- _renderControls', '$submit',$submit)
+			console.log('-- _renderControls', '$submit',$submit);
 			
 			console.log('<< _renderControls',$tr);
 			return $tfoot;
 			 
 	} ; // _renderControls
-	
+	 
 	var _show = function(args) {
 
 		var $element = this;
@@ -229,46 +239,27 @@
 		args = args || {};
 		
 		var $element = $(args.element);
-		console.log($element);
-		$element.find('.button.add').bind('click', function() {
-			testValidation();
-			_validate();
-			var tableFind = $('body').find('.table');
-			console.log(tableFind);
-			_addRow( { $tableFind:tableFind } );
-		});	
+		var $this = $(this);
+		
+		var $tbody = $element.find('tbody');
+		$element.find('.delete').live('click', function(event) {
+			console.log('-- _addEvents() :', event.target);
+			_removeOne({ element:event.target });
+			return false;
+		});
+		
+		$element.find('.button.add').bind('click', function(index, element) {
+		
+			var name = $('input[name^="name"]').val();
+			var cups = $('input[name^="cups"]').val();
+			var bust = $('input[name^="bust"]').val();
+			
+			_addOne( { name: name, cups: cups || undefined, bust: bust || undefined } );
+			_show.call($element);
+		
+		});	 // $element.find()
 	
 	} ; // var _addEvents
-
-	var _addRow = function(args) {
-
-		args = args || {};
-		var $table = $('body').find('.table');
-
-		var name = $('input[name^="name"]').val();
-		var cups = $('input[name^="cups"]').val();
-		var bust = $('input[name^="bust"]').val();
-		
-		if( 0 >= $table.length ) {
-			return this;
-		} // if
-	
-		var $tbody = $('<tbody></tbody>').appendTo($table);
-		var odd = false;
-				
-		
-			odd = !odd;
-			var $row = $('<tr class="row" ></tr>');
-			$row.append('<td class="name" >' + name + '</td>');
-			/*$row.addClass(odd ? 'odd' : 'even' ).attr('data-dnbs-key',person.key);*/
-			$row.append( '<td class="cups" >' + cups + '</td>' );
-			$row.append( '<td class="bust" >' + bust + '</td>' );
-			$row.append( '<td class="delete"><a class="delete" href="javascript: return false;" >X</a></td>' );
-			$tbody.append( $row );			
-		
-		
-		return $tbody;
-	}; // var _addRow
 			
 	var _clear = function(args) {
 
@@ -293,8 +284,7 @@
 		add: _add,
 		show: _show,
 		clear: _clear,
-		get: _get,
-		addRow: _addRow
+		get: _get
 	}; // var _methods
 
 	/**
