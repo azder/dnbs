@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head><meta charset="UTF-8" />
+		<title>jquery.dnds.js test</title>
+		<link rel="stylesheet" href="jquery.dnbs.css" /> 
+		<style type="text/css">
+			#dnbs1 { width: 20em; }
+		</style>
+	</head>
+	<body >
+		<section id="main">
+			
+			<div id="dnbs1">
+			</div>
+			
+			<!--div class="many" ></div>
+			<div class="many" ></div>
+			<div class="many" ></div>
+			<div class="many" ></div-->
+			
+		</section>
+		
+		<!-- SCRIPTS START -->
+		<script type="text/javascript" src="jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="jquery-ui-1.8.11.full.min.js"></script>
+		<script type="text/javascript" src="jquery.dnbs.js" ></script>
+		 
+		<script type="text/javascript" >
+			
+			var $jq = jQuery.noConflict();
+			
+			var test01 = function() {
+				alert('this is just a test for now.');
+			};
+			
+			$jq(function($){
+				var $d = $('#dnbs1').dnbs();
+				
+				var $this = $(this);
+
+				$d.dnbs('add', [
+					{ name: 'Jenna Jameson', cups: 'DD', bust: '86' },
+					{ name: 'Aleksandar', cups: 'DD', bust: '86' },
+					{ key: 'silvi', name: 'Silvia Saint', cups: 'C', bust: '86' },
+					{ name: 'Traci Lords', cups: 'D', bust: '91' }
+				] ); // add
+				
+				$d.dnbs('show');
+				// console.log($d.dnbs('get',{all:true}));
+				// window.AZ = { $d: $d };
+				
+				/*var $m = $('.many').dnbs();
+				$m.dnbs('add',{ name: 'Jenna Jameson', cups: 'DD', bust: '86' });
+				$m.dnbs('show');*/
+				
+			}); // $jq
+		</script>
+		<!-- SCRIPTS END -->
+	</body>
+</html>
